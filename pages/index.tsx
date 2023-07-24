@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Video } from "../src/interfaces";
 
 export default function Home() {
-  const [videos, setVideos] = useState<any>([]);
+  const [videos, setVideos] = useState<Video[]>([]);
 
   useEffect(() => {
     const fetchVideosData = async () => {
@@ -14,7 +14,7 @@ export default function Home() {
     };
     fetchVideosData().catch(console.error);
   }, []);
-  console.log(videos);
+  // console.log(videos);
 
   return (
     <>

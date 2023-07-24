@@ -80,3 +80,20 @@ export const uploadVideo = async (video: VideoUpload) => {
     console.error("Error uploading video:", error);
   }
 };
+
+export const uploadVTTFile = async (vttFile: any) => {
+  try {
+    const response = await fetch(`${VTT_SERVICE_URL}/api/vtts/upload`, {
+      method: "POST",
+      body: vttFile,
+    });
+
+    // handle response
+    if (!response.ok) {
+      throw new Error("Failed to upload vtt file");
+    }
+    return response;
+  } catch (error) {
+    console.error("Error uploading vtt file:", error);
+  }
+};

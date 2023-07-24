@@ -9,10 +9,20 @@ export interface Video {
   transcodeDone: boolean;
 }
 
+export interface VideoDetail extends Video {
+  manifestUrl: string;
+  videoUrl: string;
+}
+
 export interface VideoUpload {
   title: string;
   description: string;
   filedId: string;
   fileName: string;
   thumbnailUrl: string;
+}
+
+export interface VttFileUpload {
+  vttFile: File;
+  videoId: string;
 }
