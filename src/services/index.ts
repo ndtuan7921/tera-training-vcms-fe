@@ -1,4 +1,5 @@
 import { CONTENT_SERVICE_URL, VTT_SERVICE_URL } from "../../env.config";
+import { VideoUpload } from "../interfaces";
 import { parseWebVtt } from "../utils/parseVTTFile";
 
 /* GET */
@@ -57,4 +58,25 @@ export const getResolutionList = async (URL: string) => {
     console.log("Error:", error);
   }
 };
-/* GET */
+
+/* POST */
+
+export const uploadVideo = async (video: VideoUpload) => {
+  try {
+    const response = await fetch(`${CONTENT_SERVICE_URL}/api/videos`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ...video }),
+    });
+    // handle response
+    if (!response.ok) {
+      throw new Error("Failed to upload video");
+    }
+
+    return response;
+  } catch (error) {
+    console.error("Error uploading video:", error);
+  }
+};

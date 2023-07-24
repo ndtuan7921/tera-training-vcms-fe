@@ -8,3 +8,11 @@ export interface Video {
   title: string;
   transcodeDone: boolean;
 }
+
+export interface VideoUpload {
+  title: string;
+  description: string;
+  filedId: string;
+  fileName: string;
+  thumbnailUrl: string;
+}
