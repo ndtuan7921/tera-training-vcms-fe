@@ -3,7 +3,7 @@ import Tus from "@uppy/tus";
 import "@uppy/core/dist/style.min.css";
 import "@uppy/dashboard/dist/style.min.css";
 import React, { useEffect } from "react";
-import { UPLOAD_SERVICE_URL } from "../../../env.config";
+import { UPLOAD_SERVICE_URL, VTT_SERVICE_URL } from "../../../env.config";
 import { Stack, Typography } from "@mui/material";
 import { Dashboard } from "@uppy/react";
 
@@ -16,13 +16,26 @@ const uppy = new Uppy({
     maxNumberOfFiles: 1,
     allowedFileTypes: ["image/*"],
   },
+  onBeforeFileAdded: (currentFile, files) => {
+    const tick = new Date().getTime();
+    const modifiedFile = {
+      ...currentFile,
+      name:
+        currentFile.name.replace(/\s+/g, "").replace(/\.[^/.]+$/, "") +
+        "_" +
+        tick +
+        "." +
+        currentFile.extension,
+    };
+    return modifiedFile;
+  },
 }).use(Tus, {
-  // endpoint: UPLOAD_SERVICE_URL + "/upload",
+  //   endpoint: UPLOAD_SERVICE_URL + "/upload",
   endpoint: TUS_ENDPOINT,
 });
 
-function ImageUploader(props: any) {
-  const { handleThumbnail, isSubmitted, setIsSubmitted } = props;
+function ProductImageUploader(props: any) {
+  const { handleProductImage, isSubmitted, setIsSubmitted } = props;
 
   useEffect(() => {
     if (isSubmitted) {
@@ -32,11 +45,14 @@ function ImageUploader(props: any) {
   }, [isSubmitted]);
 
   uppy.on("file-added", (file) => {
-    uppy.setMeta({ uploadType: "thumbnail" });
+    uppy.setMeta({ uploadType: "vtt_image" });
+    uppy.setFileMeta(file.id, {
+      name: file.name,
+    });
   });
 
   uppy.on("upload-success", function (file, upload) {
-    handleThumbnail(file!.data.name);
+    handleProductImage(VTT_SERVICE_URL + "/vtt-image/" + file!.name);
   });
 
   return (
@@ -48,4 +64,4 @@ function ImageUploader(props: any) {
   );
 }
 
-export default ImageUploader;
+export default ProductImageUploader;

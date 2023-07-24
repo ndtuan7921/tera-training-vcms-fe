@@ -26,7 +26,7 @@ import {
   Typography,
 } from "@mui/material";
 import dynamic from "next/dynamic";
-import FormDialog from "../../../src/components/FormDialog/VttFile";
+import FormDialog from "../../../src/components/FormDialog";
 
 function VideoPage() {
   const router = useRouter();
@@ -38,7 +38,6 @@ function VideoPage() {
   const [vttFile, setVttFile] = useState<any>(null);
   const [vttData, setVttData] = useState<any>(null);
   const [currentTime, setCurrentTime] = useState(0);
-  const [isOpen, setIsOpen] = useState(false);
 
   //    fetch video data
   useEffect(() => {
