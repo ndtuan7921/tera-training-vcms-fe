@@ -19,7 +19,8 @@ export default function Home() {
   return (
     <>
       <h1>HOME</h1>
-      {videos.length &&
+      {videos &&
+        videos.length &&
         videos.map((video: Video) => {
           return (
             <Link

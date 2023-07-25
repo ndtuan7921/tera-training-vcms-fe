@@ -27,6 +27,7 @@ import {
 } from "@mui/material";
 import dynamic from "next/dynamic";
 import FormDialog from "../../../src/components/FormDialog/VttFile";
+import CustomizedDialogs from "../../../src/components/FormDialog/VttFile";
 
 function VideoPage() {
   const router = useRouter();
@@ -36,7 +37,7 @@ function VideoPage() {
   const [masterPlaylist, setMasterPlaylist] = useState<any>(null);
   const [selectedResolution, setSelectedResolution] = useState<any>(null);
   const [vttFile, setVttFile] = useState<any>(null);
-  const [vttData, setVttData] = useState<any>(null);
+  const [productAds, setProductAds] = useState<any>([]);
   const [currentTime, setCurrentTime] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -79,7 +80,8 @@ function VideoPage() {
   useEffect(() => {
     const loadVTTData = async () => {
       const data = await getProductListByVTTFile(vttFile);
-      setVttData(data);
+      // console.log("data>>>>>>>>>", data);
+      data ? setProductAds(data) : setProductAds([]);
     };
     vttFile && loadVTTData();
   }, [vttFile]);
@@ -112,6 +114,8 @@ function VideoPage() {
     playerRef.current.getCurrentTime() &&
       setCurrentTime(playerRef.current.getCurrentTime());
   };
+
+  console.log("productAds>>>>>>>>>>>>>\n", productAds);
 
   return (
     <Box>
@@ -157,23 +161,9 @@ function VideoPage() {
               </FormControl>
 
               {/* handle VTT file */}
-              {/* <Button
-                variant="outlined"
-                startIcon={<InsertDriveFileIcon />}
-                onClick={() => setIsOpen((state) => !state)}
-              >
-                VTT File
-              </Button> */}
-              <FormDialog />
 
               {/* handle products */}
-              <Button
-                color="secondary"
-                variant="outlined"
-                startIcon={<SellIcon />}
-              >
-                Products
-              </Button>
+              <CustomizedDialogs {...{ productAds, setProductAds }} />
             </Stack>
           </Box>
 
