@@ -8,7 +8,7 @@ import {
 
 import SellIcon from "@mui/icons-material/Sell";
 import { useRouter } from "next/router";
-import { VideoDetail } from "../../../src/interfaces";
+import { Product, VideoDetail } from "../../../src/interfaces";
 import parseMasterPlaylist from "../../../src/utils/parseMaterPlaylist";
 import { CONTENT_SERVICE_URL, VTT_SERVICE_URL } from "../../../env.config";
 import ReactPlayer from "react-player";
@@ -28,6 +28,7 @@ import {
 import dynamic from "next/dynamic";
 import FormDialog from "../../../src/components/FormDialog/VttFile";
 import CustomizedDialogs from "../../../src/components/FormDialog/VttFile";
+import ProductCard from "../../../src/components/ProductCard";
 
 function VideoPage() {
   const router = useRouter();
@@ -39,7 +40,7 @@ function VideoPage() {
   const [vttFile, setVttFile] = useState<any>(null);
   const [productAds, setProductAds] = useState<any>([]);
   const [currentTime, setCurrentTime] = useState(0);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isVTTSubmited, setIsVTTSubmited] = useState(false);
 
   //    fetch video data
   useEffect(() => {
@@ -71,20 +72,20 @@ function VideoPage() {
     const loadVTTFile = async () => {
       const videoId = router.query.id as string;
       const data = await getVTTFileByVideoId(videoId);
+      console.log(data);
       setVttFile(VTT_SERVICE_URL + data.vttUrl);
     };
     router.query.id && loadVTTFile();
-  }, [router.isReady, router.query.id]);
+  }, [router.isReady, router.query.id, isVTTSubmited]);
 
   //    fetch VTT data
   useEffect(() => {
     const loadVTTData = async () => {
       const data = await getProductListByVTTFile(vttFile);
-      // console.log("data>>>>>>>>>", data);
       data ? setProductAds(data) : setProductAds([]);
     };
     vttFile && loadVTTData();
-  }, [vttFile]);
+  }, [vttFile, isVTTSubmited]);
 
   const config = useMemo(() => {
     return {
@@ -102,7 +103,7 @@ function VideoPage() {
         ],
       },
     };
-  }, [vttFile]);
+  }, [vttFile, isVTTSubmited]);
 
   const baseURL = `${CONTENT_SERVICE_URL}/manifest/${video?.fileName.replace(
     ".mp4",
@@ -115,7 +116,7 @@ function VideoPage() {
       setCurrentTime(playerRef.current.getCurrentTime());
   };
 
-  console.log("productAds>>>>>>>>>>>>>\n", productAds);
+  console.log(vttFile);
 
   return (
     <Box>
@@ -134,6 +135,12 @@ function VideoPage() {
               onStart={() => playerRef.current?.seekTo(currentTime)}
               config={config}
             />
+            <Stack spacing={2} my={2}>
+              <Typography variant="h4" sx={{ textTransform: "capitalize" }}>
+                {video.title}
+              </Typography>
+              <Typography variant="h6">{video.description}</Typography>
+            </Stack>
             <Stack direction={"row"} spacing={2} my={4}>
               {/* Quality of video */}
               <FormControl sx={{ minWidth: 120 }} size="small">
@@ -160,19 +167,31 @@ function VideoPage() {
                 </Select>
               </FormControl>
 
-              {/* handle VTT file */}
+              {/* handle products & VTT File */}
+              <CustomizedDialogs
+                {...{ productAds, setProductAds, setIsVTTSubmited }}
+                videoId={video && video.id}
+              />
+            </Stack>
 
-              {/* handle products */}
-              <CustomizedDialogs {...{ productAds, setProductAds }} />
+            {/* Product List */}
+            <Stack spacing={2} my={4}>
+              <Typography variant="h6">Product List</Typography>
+              <Stack direction={"row"} spacing={2} my={4}>
+                {productAds.length > 0 &&
+                  productAds.map((product: Product) => (
+                    <div
+                      key={product.imgURL}
+                      onClick={() =>
+                        playerRef.current?.seekTo(product.startTime)
+                      }
+                    >
+                      <ProductCard {...product} />
+                    </div>
+                  ))}
+              </Stack>
             </Stack>
           </Box>
-
-          <Stack spacing={2} my={2}>
-            <Typography variant="h4" sx={{ textTransform: "capitalize" }}>
-              {video.title}
-            </Typography>
-            <Typography variant="h6">{video.description}</Typography>
-          </Stack>
         </>
       )}
     </Box>

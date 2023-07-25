@@ -26,3 +26,12 @@ export interface VttFileUpload {
   vttFile: File;
   videoId: string;
 }
+
+export interface Product {
+  startTime: number;
+  endTime: number;
+  name: string;
+  description: string;
+  price: string;
+  imgURL: string;
+}

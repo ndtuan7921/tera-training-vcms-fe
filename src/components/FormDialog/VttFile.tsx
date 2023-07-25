@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as webvtt from "node-webvtt";
 import CloseIcon from "@mui/icons-material/Close";
 import {
   Button,
@@ -15,8 +16,9 @@ import {
   Slider,
   Input,
 } from "@mui/material";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ProductImageUploader } from "../Uploader";
+import { uploadVTTFile } from "../../services";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -58,7 +60,7 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
 }
 
 export default function CustomizedDialogs(props: any) {
-  const { productAds, setProductAds } = props;
+  const { productAds, setProductAds, videoId, setIsVTTSubmited } = props;
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [imgURL, setImgURL] = useState("");
@@ -67,6 +69,11 @@ export default function CustomizedDialogs(props: any) {
   const nameRef = useRef<HTMLInputElement | null>(null);
   const desRef = useRef<HTMLInputElement | null>(null);
   const priceRef = useRef<HTMLInputElement | null>(null);
+
+  // useEffect(() => {
+  //   // console.log(productAds);
+  //   handleVTTFile();
+  // }, [productAds]);
 
   const handleOpen = () => {
     setIsOpen((state) => !state);
@@ -98,13 +105,53 @@ export default function CustomizedDialogs(props: any) {
     nameRef.current!.value = "";
     desRef.current!.value = "";
     priceRef.current!.value = "";
-    setIsOpen(false);
+    setStartTime(0);
+    setEndTime(0);
+  };
+
+  const handleSubmit = async () => {
+    const parsedSubtitle = {
+      cues: [],
+      valid: true,
+    };
+
+    productAds.forEach((subtitle: any, index: any) => {
+      const cue = {
+        identifier: (index + 1).toString(),
+        start: subtitle.startTime,
+        end: subtitle.endTime,
+        text: `${subtitle.name}\n${subtitle.description}\n${subtitle.price}\n${subtitle.imgURL}`,
+        styles: "",
+      };
+      parsedSubtitle.cues.push(cue as never);
+    });
+
+    const modifiedSubtitleContent = (webvtt as any).compile(parsedSubtitle);
+
+    console.log(modifiedSubtitleContent);
+
+    const modifiedSubtitleFile = new File(
+      [modifiedSubtitleContent],
+      "subtitles.vtt"
+    );
+
+    // Create FormData to send the file
+    const formData = new FormData();
+    formData.append("subtitleFile", modifiedSubtitleFile);
+    formData.append("videoId", videoId);
+
+    try {
+      const res = await uploadVTTFile(formData);
+      res!.ok && alert("fine");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
     <div>
       <Button variant="outlined" onClick={handleOpen}>
-        Open dialog
+        Products
       </Button>
       <BootstrapDialog
         onClose={handleOpen}
@@ -186,9 +233,8 @@ export default function CustomizedDialogs(props: any) {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleAddNew}>
-            Create new product
-          </Button>
+          <Button onClick={handleAddNew}>Add new product</Button>
+          <Button onClick={handleSubmit}>Submit VTT File</Button>
         </DialogActions>
       </BootstrapDialog>
     </div>

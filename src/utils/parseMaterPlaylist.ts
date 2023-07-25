@@ -13,7 +13,10 @@ const parseMasterPlaylist = (playlist: any) => {
         resolution &&
         !resolutions.some((item) => item.resolution === resolution)
       ) {
-        resolutions.push({ resolution, uri: lines[i + 1] });
+        resolutions.push({
+          resolution: resolution.split("x")[1],
+          uri: lines[i + 1],
+        });
       }
     }
   }
