@@ -41,6 +41,7 @@ export const getProductListByVTTFile = async (vttURL: string) => {
   try {
     const URL = vttURL;
     const res = await fetch(URL);
+    if (res.status == 404) return [];
     const webvttContent = await res.text();
     const result = parseWebVtt(webvttContent);
     return result;

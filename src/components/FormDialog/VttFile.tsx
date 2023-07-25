@@ -60,7 +60,8 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
 }
 
 export default function CustomizedDialogs(props: any) {
-  const { productAds, setProductAds, videoId, setIsVTTSubmited } = props;
+  const { productAds, setProductAds, videoId, setIsVTTSubmited, duration } =
+    props;
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [imgURL, setImgURL] = useState("");
@@ -177,6 +178,7 @@ export default function CustomizedDialogs(props: any) {
                     <Slider
                       value={startTime}
                       onChange={handleStartTimeChange}
+                      max={duration}
                     />
                     <Input value={startTime} size="small" />
                   </Stack>
@@ -184,7 +186,11 @@ export default function CustomizedDialogs(props: any) {
                 <Grid item xs={12}>
                   <InputLabel>End Time</InputLabel>
                   <Stack direction={"row"} spacing={3}>
-                    <Slider value={endTime} onChange={handleEndTimeChange} />
+                    <Slider
+                      value={endTime}
+                      onChange={handleEndTimeChange}
+                      max={duration}
+                    />
                     <Input value={endTime} size="small" />
                   </Stack>
                 </Grid>

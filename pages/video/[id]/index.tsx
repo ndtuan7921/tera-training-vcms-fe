@@ -42,6 +42,7 @@ function VideoPage() {
   const [productAds, setProductAds] = useState<any>([]);
   const [currentTime, setCurrentTime] = useState(0);
   const [isVTTSubmited, setIsVTTSubmited] = useState(false);
+  const [duration, setDuration] = useState(0);
 
   //    fetch video data
   useEffect(() => {
@@ -62,8 +63,9 @@ function VideoPage() {
   useEffect(() => {
     const fetchVideoResolutions = async () => {
       const data = await getResolutionList(url);
-      setMasterPlaylist(parseMasterPlaylist(data));
-      setSelectedResolution(parseMasterPlaylist(data)[0]);
+      data &&
+        (setMasterPlaylist(parseMasterPlaylist(data)),
+        setSelectedResolution(parseMasterPlaylist(data)[0]));
     };
     url && fetchVideoResolutions();
   }, [video, url]);
@@ -73,7 +75,7 @@ function VideoPage() {
     const loadVTTFile = async () => {
       const videoId = router.query.id as string;
       const data = await getVTTFileByVideoId(videoId);
-      console.log(data);
+      // console.log(data);
       setVttFile(VTT_SERVICE_URL + data.vttUrl);
     };
     router.query.id && loadVTTFile();
@@ -83,7 +85,7 @@ function VideoPage() {
   useEffect(() => {
     const loadVTTData = async () => {
       const data = await getProductListByVTTFile(vttFile);
-      data ? setProductAds(data) : setProductAds([]);
+      setProductAds(data);
     };
     vttFile && loadVTTData();
   }, [vttFile, isVTTSubmited]);
@@ -117,8 +119,6 @@ function VideoPage() {
       setCurrentTime(playerRef.current.getCurrentTime());
   };
 
-  console.log(vttFile);
-
   return (
     <Box>
       {video && (
@@ -135,6 +135,9 @@ function VideoPage() {
               playerRef={playerRef}
               onStart={() => playerRef.current?.seekTo(currentTime)}
               config={config}
+              onDuration={(duration: number) =>
+                setDuration(Math.ceil(duration))
+              }
             />
             <Stack spacing={2} my={2}>
               <Typography variant="h4" sx={{ textTransform: "capitalize" }}>
@@ -170,7 +173,7 @@ function VideoPage() {
 
               {/* handle products & VTT File */}
               <CustomizedDialogs
-                {...{ productAds, setProductAds, setIsVTTSubmited }}
+                {...{ productAds, setProductAds, setIsVTTSubmited, duration }}
                 videoId={video && video.id}
               />
 

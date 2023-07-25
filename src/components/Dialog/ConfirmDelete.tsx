@@ -8,6 +8,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { deleteVideo } from "../../services";
 import { useRouter } from "next/router";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 export default function ConfirmDelete(props: any) {
   const { videoId } = props;
@@ -31,7 +32,12 @@ export default function ConfirmDelete(props: any) {
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      <Button
+        variant="outlined"
+        color="error"
+        onClick={handleClickOpen}
+        startIcon={<DeleteOutlineIcon />}
+      >
         Delete video
       </Button>
       <Dialog open={open} onClose={handleClickOpen}>

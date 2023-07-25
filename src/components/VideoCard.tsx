@@ -9,11 +9,12 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import DoneIcon from "@mui/icons-material/Done";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import defaultThumbnail from "../assets/images/thumbnail_default.jpg";
 import { CONTENT_SERVICE_URL } from "../../env.config";
 import formattedDate from "../utils/formatDate";
 import { Video } from "../interfaces";
+import { green } from "@mui/material/colors";
 
 const ListItemButtonWrapper = styled(ListItemButton)(({ theme }) => ({
   columnGap: "3rem",
@@ -42,24 +43,22 @@ function VideoCard(props: VideoCardProps) {
         </ListItemIcon>
         <ListItemText>
           <Stack spacing={2}>
-            {/* <Typography variant="subtitle2">Action | Drama</Typography> */}
-            <Typography variant="h4" sx={{ textTransform: "capitalize" }}>
-              {props.title}
-            </Typography>
+            <Stack spacing={2} direction={"row"} alignItems={"center"}>
+              <Typography variant="h4" sx={{ textTransform: "capitalize" }}>
+                {props.title}
+              </Typography>
+              {props.transcodeDone && (
+                <CheckCircleIcon
+                  style={{ color: green[400], fontSize: "2rem" }}
+                />
+              )}
+            </Stack>
+
             <Typography variant="subtitle2">
               {formattedDate(props.createdAt)}
             </Typography>
             <Typography variant="subtitle1">{props.description}</Typography>
           </Stack>
-          {props.transcodeDone && (
-            <Chip
-              sx={{ float: "right" }}
-              deleteIcon={<DoneIcon />}
-              label="transcoded"
-              color="success"
-              variant="outlined"
-            />
-          )}
         </ListItemText>
       </ListItemButtonWrapper>
       <Divider />
