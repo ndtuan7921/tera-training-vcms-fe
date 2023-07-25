@@ -19,6 +19,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { ProductImageUploader } from "../Uploader";
 import { uploadVTTFile } from "../../services";
+import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -157,7 +158,11 @@ export default function CustomizedDialogs(props: any) {
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleOpen}>
+      <Button
+        variant="outlined"
+        onClick={handleOpen}
+        startIcon={<ShoppingBagOutlinedIcon />}
+      >
         Products
       </Button>
       <BootstrapDialog

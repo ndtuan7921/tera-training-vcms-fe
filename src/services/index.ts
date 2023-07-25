@@ -26,6 +26,19 @@ export const getVideoById = async (id: string) => {
   }
 };
 
+export const getVideo = async (pageSize: number, pageNumber: number) => {
+  try {
+    const URL = `${CONTENT_SERVICE_URL}/api/videos?pageSize=${pageSize}&pageNumber=${pageNumber}`;
+    const data = await fetch(URL);
+    const result = await data.json();
+    return {
+      ...result,
+    };
+  } catch (error) {
+    console.log("Error:", error);
+  }
+};
+
 export const getVTTFileByVideoId = async (id: string) => {
   try {
     const URL = `${VTT_SERVICE_URL}/api/vtts/${id}`;

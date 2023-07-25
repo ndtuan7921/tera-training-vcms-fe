@@ -6,7 +6,7 @@ import {
   getVideoById,
 } from "../../../src/services";
 
-import SellIcon from "@mui/icons-material/Sell";
+import ChevronLeftOutlinedIcon from "@mui/icons-material/ChevronLeftOutlined";
 import { useRouter } from "next/router";
 import { Product, VideoDetail } from "../../../src/interfaces";
 import parseMasterPlaylist from "../../../src/utils/parseMaterPlaylist";
@@ -30,6 +30,7 @@ import FormDialog from "../../../src/components/FormDialog/VttFile";
 import CustomizedDialogs from "../../../src/components/FormDialog/VttFile";
 import ProductCard from "../../../src/components/ProductCard";
 import ConfirmDelete from "../../../src/components/Dialog/ConfirmDelete";
+import Link from "next/link";
 
 function VideoPage() {
   const router = useRouter();
@@ -75,7 +76,6 @@ function VideoPage() {
     const loadVTTFile = async () => {
       const videoId = router.query.id as string;
       const data = await getVTTFileByVideoId(videoId);
-      // console.log(data);
       setVttFile(VTT_SERVICE_URL + data.vttUrl);
     };
     router.query.id && loadVTTFile();
@@ -121,9 +121,16 @@ function VideoPage() {
 
   return (
     <Box>
+      <Link href="/" style={{ textDecoration: "none", color: "inherit" }}>
+        <Stack spacing={1} direction={"row"} alignItems={"center"}>
+          <ChevronLeftOutlinedIcon />
+          <Typography variant="h6">Back</Typography>
+        </Stack>
+      </Link>
+
       {video && (
         <>
-          <Box>
+          <Stack spacing={4} my={4}>
             <Player
               key={vttFile}
               playing
@@ -147,29 +154,33 @@ function VideoPage() {
             </Stack>
             <Stack direction={"row"} spacing={2} my={4}>
               {/* Quality of video */}
-              <FormControl sx={{ minWidth: 120 }} size="small">
-                <InputLabel id="video-quality">Quality</InputLabel>
-                <Select
-                  labelId="video-quality"
-                  id="video-quality"
-                  value={
-                    selectedResolution ? selectedResolution.resolution : ""
-                  }
-                  label="Quality"
-                >
-                  {masterPlaylist &&
-                    masterPlaylist.map((item: any) => (
-                      <MenuItem
-                        key={item.uri}
-                        onClick={() => handleResolutionChange(item)}
-                        disabled={item.uri === selectedResolution.uri}
-                        value={item.resolution}
-                      >
-                        {item.resolution}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
+              {video.transcodeDone ? (
+                <FormControl sx={{ minWidth: 120 }} size="small">
+                  <InputLabel id="video-quality">Quality</InputLabel>
+                  <Select
+                    labelId="video-quality"
+                    id="video-quality"
+                    value={
+                      selectedResolution ? selectedResolution.resolution : ""
+                    }
+                    label="Quality"
+                  >
+                    {masterPlaylist &&
+                      masterPlaylist.map((item: any) => (
+                        <MenuItem
+                          key={item.uri}
+                          onClick={() => handleResolutionChange(item)}
+                          disabled={item.uri === selectedResolution.uri}
+                          value={item.resolution}
+                        >
+                          {item.resolution}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </FormControl>
+              ) : (
+                <Typography variant="h6">Wait for transcoding</Typography>
+              )}
 
               {/* handle products & VTT File */}
               <CustomizedDialogs
@@ -184,7 +195,7 @@ function VideoPage() {
             <Stack spacing={2} my={4}>
               <Typography variant="h6">Product List</Typography>
               <Stack direction={"row"} spacing={2} my={4}>
-                {productAds.length > 0 &&
+                {productAds.length > 0 ? (
                   productAds.map((product: Product) => (
                     <div
                       key={product.imgURL}
@@ -194,10 +205,13 @@ function VideoPage() {
                     >
                       <ProductCard {...product} />
                     </div>
-                  ))}
+                  ))
+                ) : (
+                  <Typography variant="body1">Not found</Typography>
+                )}
               </Stack>
             </Stack>
-          </Box>
+          </Stack>
         </>
       )}
     </Box>
