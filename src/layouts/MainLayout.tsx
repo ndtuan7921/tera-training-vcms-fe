@@ -12,8 +12,8 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
+import WebAssetIcon from "@mui/icons-material/WebAsset";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
 import React, { PropsWithChildren } from "react";
 import Link from "next/link";
 const drawerWidth = 240;
@@ -22,13 +22,13 @@ const sidebarItems = [
     id: "all-videos",
     text: "All Videos",
     url: "/",
-    icon: <InboxIcon />,
+    icon: <WebAssetIcon />,
   },
   {
     id: "upload",
     text: "Upload",
     url: "/upload",
-    icon: <InboxIcon />,
+    icon: <UploadFileIcon />,
   },
 ];
 function MainLayout({ children }: PropsWithChildren) {
@@ -43,7 +43,7 @@ function MainLayout({ children }: PropsWithChildren) {
       >
         <Toolbar>
           <Typography variant="h6" noWrap component="div">
-            Permanent drawer
+            VCMS - Tera Training
           </Typography>
         </Toolbar>
       </AppBar>
@@ -63,7 +63,11 @@ function MainLayout({ children }: PropsWithChildren) {
         <Divider />
         <List>
           {sidebarItems.map((item) => (
-            <Link href={item.url} key={item.id}>
+            <Link
+              href={item.url}
+              key={item.id}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
               <div>
                 <ListItem disablePadding>
                   <ListItemButton>

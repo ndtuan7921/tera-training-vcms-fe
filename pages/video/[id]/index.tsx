@@ -29,6 +29,7 @@ import dynamic from "next/dynamic";
 import FormDialog from "../../../src/components/FormDialog/VttFile";
 import CustomizedDialogs from "../../../src/components/FormDialog/VttFile";
 import ProductCard from "../../../src/components/ProductCard";
+import ConfirmDelete from "../../../src/components/Dialog/ConfirmDelete";
 
 function VideoPage() {
   const router = useRouter();
@@ -172,6 +173,8 @@ function VideoPage() {
                 {...{ productAds, setProductAds, setIsVTTSubmited }}
                 videoId={video && video.id}
               />
+
+              <ConfirmDelete videoId={video && video.id} />
             </Stack>
 
             {/* Product List */}

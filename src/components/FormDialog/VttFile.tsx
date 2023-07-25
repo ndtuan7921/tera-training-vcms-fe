@@ -70,6 +70,10 @@ export default function CustomizedDialogs(props: any) {
   const desRef = useRef<HTMLInputElement | null>(null);
   const priceRef = useRef<HTMLInputElement | null>(null);
 
+  const name = nameRef.current?.value;
+  const description = desRef.current?.value;
+  const price = priceRef.current?.value;
+
   // useEffect(() => {
   //   // console.log(productAds);
   //   handleVTTFile();
@@ -87,9 +91,8 @@ export default function CustomizedDialogs(props: any) {
   };
 
   const handleAddNew = () => {
-    const name = nameRef.current?.value;
-    const description = desRef.current?.value;
-    const price = priceRef.current?.value;
+    if (!name || !description || !price) return;
+
     const newProduct = {
       startTime,
       endTime,
@@ -110,6 +113,8 @@ export default function CustomizedDialogs(props: any) {
   };
 
   const handleSubmit = async () => {
+    if (!name || !description || !price || startTime > endTime) return;
+
     const parsedSubtitle = {
       cues: [],
       valid: true,
@@ -142,7 +147,8 @@ export default function CustomizedDialogs(props: any) {
 
     try {
       const res = await uploadVTTFile(formData);
-      res!.ok && alert("fine");
+
+      res!.ok && (alert("Submit File sucessfully"), setIsOpen(false));
     } catch (error) {
       console.error(error);
     }
@@ -233,8 +239,12 @@ export default function CustomizedDialogs(props: any) {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleAddNew}>Add new product</Button>
-          <Button onClick={handleSubmit}>Submit VTT File</Button>
+          <Button disabled={!isSubmitted} onClick={handleAddNew}>
+            Add new product
+          </Button>
+          <Button disabled={!isSubmitted} onClick={handleSubmit}>
+            Submit VTT File
+          </Button>
         </DialogActions>
       </BootstrapDialog>
     </div>

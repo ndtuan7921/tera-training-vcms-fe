@@ -97,3 +97,19 @@ export const uploadVTTFile = async (vttFile: any) => {
     console.error("Error uploading vtt file:", error);
   }
 };
+
+/* DELETE */
+export const deleteVideo = async (id: string) => {
+  try {
+    const URL = `${CONTENT_SERVICE_URL}/api/videos/${id}`;
+    const res = await fetch(URL, {
+      method: "DELETE",
+    });
+    // handle response
+    if (!res.ok) {
+      throw new Error("Failed to delete video");
+    }
+  } catch (error) {
+    console.error("Error deleting video:", error);
+  }
+};
