@@ -60,7 +60,7 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
   );
 }
 
-export default function CustomizedDialogs(props: any) {
+export default function ProductAdsForm(props: any) {
   const { productAds, setProductAds, videoId, setIsVTTSubmited, duration } =
     props;
   const [isOpen, setIsOpen] = useState(false);
@@ -75,11 +75,6 @@ export default function CustomizedDialogs(props: any) {
   const name = nameRef.current?.value;
   const description = desRef.current?.value;
   const price = priceRef.current?.value;
-
-  // useEffect(() => {
-  //   // console.log(productAds);
-  //   handleVTTFile();
-  // }, [productAds]);
 
   const handleOpen = () => {
     setIsOpen((state) => !state);
@@ -135,7 +130,7 @@ export default function CustomizedDialogs(props: any) {
 
     const modifiedSubtitleContent = (webvtt as any).compile(parsedSubtitle);
 
-    console.log(modifiedSubtitleContent);
+    // console.log(modifiedSubtitleContent);
 
     const modifiedSubtitleFile = new File(
       [modifiedSubtitleContent],
@@ -163,7 +158,7 @@ export default function CustomizedDialogs(props: any) {
         onClick={handleOpen}
         startIcon={<ShoppingBagOutlinedIcon />}
       >
-        Products
+        Add Product
       </Button>
       <BootstrapDialog
         onClose={handleOpen}

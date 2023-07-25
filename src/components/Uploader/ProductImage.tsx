@@ -2,9 +2,8 @@ import Uppy from "@uppy/core";
 import Tus from "@uppy/tus";
 import "@uppy/core/dist/style.min.css";
 import "@uppy/dashboard/dist/style.min.css";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { UPLOAD_SERVICE_URL, VTT_SERVICE_URL } from "../../../env.config";
-import { Stack, Typography } from "@mui/material";
 import { Dashboard } from "@uppy/react";
 
 const TUS_ENDPOINT = "https://tusd.tusdemo.net/files/";

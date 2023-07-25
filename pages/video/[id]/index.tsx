@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   getProductListByVTTFile,
   getResolutionList,
@@ -11,14 +11,13 @@ import { useRouter } from "next/router";
 import { Product, VideoDetail } from "../../../src/interfaces";
 import parseMasterPlaylist from "../../../src/utils/parseMaterPlaylist";
 import { CONTENT_SERVICE_URL, VTT_SERVICE_URL } from "../../../env.config";
-import ReactPlayer from "react-player";
 const Player = dynamic(() => import("../../../src/components/Player"), {
   ssr: false,
 });
 import {
   Box,
-  Button,
   FormControl,
+  Grid,
   InputLabel,
   MenuItem,
   Select,
@@ -26,11 +25,9 @@ import {
   Typography,
 } from "@mui/material";
 import dynamic from "next/dynamic";
-import FormDialog from "../../../src/components/FormDialog/VttFile";
-import CustomizedDialogs from "../../../src/components/FormDialog/VttFile";
 import ProductCard from "../../../src/components/ProductCard";
-import ConfirmDelete from "../../../src/components/Dialog/ConfirmDelete";
 import Link from "next/link";
+import { ConfirmDelete, ProductAdsForm } from "../../../src/components/Dialog";
 
 function VideoPage() {
   const router = useRouter();
@@ -120,17 +117,16 @@ function VideoPage() {
   };
 
   return (
-    <Box>
+    <>
       <Link href="/" style={{ textDecoration: "none", color: "inherit" }}>
         <Stack spacing={1} direction={"row"} alignItems={"center"}>
           <ChevronLeftOutlinedIcon />
           <Typography variant="h6">Back</Typography>
         </Stack>
       </Link>
-
       {video && (
         <>
-          <Stack spacing={4} my={4}>
+          <Stack spacing={4} my={4} direction={"row"} height={500}>
             <Player
               key={vttFile}
               playing
@@ -146,55 +142,23 @@ function VideoPage() {
                 setDuration(Math.ceil(duration))
               }
             />
-            <Stack spacing={2} my={2}>
-              <Typography variant="h4" sx={{ textTransform: "capitalize" }}>
-                {video.title}
-              </Typography>
-              <Typography variant="h6">{video.description}</Typography>
-            </Stack>
-            <Stack direction={"row"} spacing={2} my={4}>
-              {/* Quality of video */}
-              {video.transcodeDone ? (
-                <FormControl sx={{ minWidth: 120 }} size="small">
-                  <InputLabel id="video-quality">Quality</InputLabel>
-                  <Select
-                    labelId="video-quality"
-                    id="video-quality"
-                    value={
-                      selectedResolution ? selectedResolution.resolution : ""
-                    }
-                    label="Quality"
-                  >
-                    {masterPlaylist &&
-                      masterPlaylist.map((item: any) => (
-                        <MenuItem
-                          key={item.uri}
-                          onClick={() => handleResolutionChange(item)}
-                          disabled={item.uri === selectedResolution.uri}
-                          value={item.resolution}
-                        >
-                          {item.resolution}
-                        </MenuItem>
-                      ))}
-                  </Select>
-                </FormControl>
-              ) : (
-                <Typography variant="h6">Wait for transcoding</Typography>
-              )}
-
-              {/* handle products & VTT File */}
-              <CustomizedDialogs
-                {...{ productAds, setProductAds, setIsVTTSubmited, duration }}
-                videoId={video && video.id}
-              />
-
-              <ConfirmDelete videoId={video && video.id} />
-            </Stack>
-
             {/* Product List */}
             <Stack spacing={2} my={4}>
-              <Typography variant="h6">Product List</Typography>
-              <Stack direction={"row"} spacing={2} my={4}>
+              <Stack spacing={4} direction={"row"} mb={2} alignItems={"center"}>
+                <Typography variant="h6">Product List</Typography>
+                {/* handle products & VTT File */}
+                <ProductAdsForm
+                  {...{ productAds, setProductAds, setIsVTTSubmited, duration }}
+                  videoId={video && video.id}
+                />
+              </Stack>
+
+              <Stack
+                spacing={2}
+                my={4}
+                overflow={"scroll"}
+                sx={{ overflowX: "hidden" }}
+              >
                 {productAds.length > 0 ? (
                   productAds.map((product: Product) => (
                     <div
@@ -212,9 +176,49 @@ function VideoPage() {
               </Stack>
             </Stack>
           </Stack>
+
+          <Stack direction={"row"} spacing={2} my={4}>
+            {/* Quality of video */}
+            {video.transcodeDone ? (
+              <FormControl sx={{ minWidth: 120 }} size="small">
+                <InputLabel id="video-quality">Quality</InputLabel>
+                <Select
+                  labelId="video-quality"
+                  id="video-quality"
+                  value={
+                    selectedResolution ? selectedResolution.resolution : ""
+                  }
+                  label="Quality"
+                >
+                  {masterPlaylist &&
+                    masterPlaylist.map((item: any) => (
+                      <MenuItem
+                        key={item.uri}
+                        onClick={() => handleResolutionChange(item)}
+                        disabled={item.uri === selectedResolution.uri}
+                        value={item.resolution}
+                      >
+                        {item.resolution}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
+            ) : (
+              <Typography variant="h6">Wait for transcoding</Typography>
+            )}
+
+            <ConfirmDelete videoId={video && video.id} />
+          </Stack>
+
+          <Stack spacing={2} my={2}>
+            <Typography variant="h4" sx={{ textTransform: "capitalize" }}>
+              {video.title}
+            </Typography>
+            <Typography variant="h6">{video.description}</Typography>
+          </Stack>
         </>
       )}
-    </Box>
+    </>
   );
 }
 
