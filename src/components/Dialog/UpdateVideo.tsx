@@ -80,13 +80,14 @@ export default function UpdateVideo(props: any) {
   }, [thumbnail]);
 
   const handleSubmit = async () => {
-    console.log(formUpdate);
+    // console.log(formUpdate);
     try {
       const res = await updateVideo(videoId, formUpdate);
-      //   console.log(res);
+      console.log(res);
       alert("Updated video");
       setIsOpen(false);
       handleUpdate(true);
+      setIsSubmitted((state) => !state);
     } catch (error) {
       console.error("Error:", error);
     }

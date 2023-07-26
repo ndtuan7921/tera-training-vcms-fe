@@ -130,7 +130,13 @@ function VideoPage() {
       </Link>
       {video && (
         <>
-          <Stack spacing={4} my={4} direction={"row"} height={900}>
+          <Stack
+            spacing={4}
+            my={4}
+            direction={"row"}
+            height={900}
+            justifyContent={"space-between"}
+          >
             <Player
               key={vttFile}
               playing
@@ -147,8 +153,8 @@ function VideoPage() {
               }
             />
             {/* Product List */}
-            <Stack spacing={2} my={4}>
-              <Stack spacing={4} direction={"row"} mb={2} alignItems={"center"}>
+            <Stack spacing={2} my={4} sx={{ flex: "auto" }}>
+              <Stack spacing={4} direction={"row"} mb={2}>
                 <Typography variant="h6">Product List</Typography>
                 {/* handle products & VTT File */}
                 <ProductAdsForm
@@ -181,6 +187,7 @@ function VideoPage() {
             </Stack>
           </Stack>
 
+          {/* Controls */}
           <Stack direction={"row"} spacing={2} my={4}>
             {/* Quality of video */}
             {video.transcodeDone ? (
@@ -221,7 +228,8 @@ function VideoPage() {
             />
           </Stack>
 
-          <Stack spacing={2} my={2}>
+          {/* Video detail */}
+          <Stack spacing={2} my={2} maxWidth={"70%"}>
             <Typography variant="h4" sx={{ textTransform: "capitalize" }}>
               {video.title}
             </Typography>

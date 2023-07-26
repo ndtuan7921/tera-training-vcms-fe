@@ -100,14 +100,7 @@ export default function ProductAdsForm(props: any) {
       imgURL,
     };
     setProductAds([...productAds, newProduct]);
-
-    // reset form
-    setIsSubmitted((state) => !state);
-    nameRef.current!.value = "";
-    desRef.current!.value = "";
-    priceRef.current!.value = "";
-    setStartTime(0);
-    setEndTime(0);
+    alert("Product added!");
   };
 
   const handleSubmit = async () => {
@@ -145,8 +138,17 @@ export default function ProductAdsForm(props: any) {
 
     try {
       const res = await uploadVTTFile(formData);
-
-      res!.ok && (alert("Submit File sucessfully"), setIsOpen(false));
+      if (res!.ok) {
+        alert("Submit File sucessfully");
+        setIsOpen(false);
+      }
+      // reset form
+      setIsSubmitted((state) => !state);
+      nameRef.current!.value = "";
+      desRef.current!.value = "";
+      priceRef.current!.value = "";
+      setStartTime(0);
+      setEndTime(0);
     } catch (error) {
       console.error(error);
     }
@@ -156,6 +158,7 @@ export default function ProductAdsForm(props: any) {
     <div>
       <Button
         variant="outlined"
+        color="secondary"
         onClick={handleOpen}
         startIcon={<ShoppingBagOutlinedIcon />}
       >
