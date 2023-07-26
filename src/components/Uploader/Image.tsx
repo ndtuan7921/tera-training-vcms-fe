@@ -52,6 +52,7 @@ function ImageUploader(props: any) {
 
   uppy.on("upload-success", function (file, upload) {
     handleThumbnail(file!.name);
+    setIsSubmitted(true);
   });
 
   return (

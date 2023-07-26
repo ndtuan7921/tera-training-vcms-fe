@@ -44,6 +44,7 @@ export default function ConfirmDelete(props: any) {
           : await deleteVTTFile(videoId);
       console.log(res);
       alert(`Deleted ${objDelete?.type}`);
+      setOpen(false);
       // router.push("/");
     } catch (error) {
       console.error(`Error deleting ${objDelete?.type}`, error);
