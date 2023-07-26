@@ -12,10 +12,12 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
+import teraLogo from "../assets/images/logo-black-wide-900-px.png";
 import WebAssetIcon from "@mui/icons-material/WebAsset";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import React, { PropsWithChildren } from "react";
 import Link from "next/link";
+import Image from "next/image";
 const drawerWidth = 240;
 const sidebarItems = [
   {
@@ -39,11 +41,12 @@ function MainLayout({ children }: PropsWithChildren) {
         sx={{
           width: `calc(100% - ${drawerWidth}px)`,
           ml: `${drawerWidth}px`,
+          bgcolor: "white",
         }}
       >
         <Toolbar>
-          <Typography variant="h6" noWrap component="div">
-            VCMS - Tera Training
+          <Typography variant="h5" sx={{ color: "#000" }}>
+            Video CMS
           </Typography>
         </Toolbar>
       </AppBar>
@@ -59,7 +62,10 @@ function MainLayout({ children }: PropsWithChildren) {
         variant="permanent"
         anchor="left"
       >
-        <Toolbar />
+        <Toolbar>
+          <Image src={teraLogo} alt={"tera"} height={40} />
+        </Toolbar>
+
         <Divider />
         <List>
           {sidebarItems.map((item) => (

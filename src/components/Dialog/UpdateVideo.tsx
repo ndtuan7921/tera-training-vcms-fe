@@ -61,23 +61,26 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
 }
 
 export default function UpdateVideo(props: any) {
-  const { videoId, title, description, thumbnailUrl, handleUpdate } = props;
+  console.log("props: ", props);
+  const { videoId, title, description, thumbnail, handleUpdate } = props;
+
   const [formUpdate, setFormUpdate] = useState({
     title,
     description,
-    thumbnail: thumbnailUrl,
+    thumbnail,
   });
+  console.log(formUpdate);
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [thumbnail, setThumbnail] = useState<string>();
+  const [newThumbnail, setNewThumbnail] = useState<string>();
 
   const handleOpen = () => {
     setIsOpen((state) => !state);
   };
 
   useEffect(() => {
-    setFormUpdate({ ...formUpdate, thumbnail });
-  }, [thumbnail]);
+    isSubmitted && setFormUpdate({ ...formUpdate, thumbnail: newThumbnail });
+  }, [newThumbnail]);
 
   const handleSubmit = async () => {
     // console.log(formUpdate);
@@ -141,7 +144,7 @@ export default function UpdateVideo(props: any) {
             <Grid item xs={12}>
               <InputLabel>Thumbnail</InputLabel>
               <ImageUploader
-                handleThumbnail={setThumbnail}
+                handleThumbnail={setNewThumbnail}
                 {...{ isSubmitted, setIsSubmitted }}
               />
             </Grid>
