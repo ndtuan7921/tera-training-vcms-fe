@@ -68,6 +68,7 @@ export default function ProductAdsForm(props: any) {
   const [imgURL, setImgURL] = useState("");
   const [startTime, setStartTime] = useState<any>(0);
   const [endTime, setEndTime] = useState<any>(0);
+
   const nameRef = useRef<HTMLInputElement | null>(null);
   const desRef = useRef<HTMLInputElement | null>(null);
   const priceRef = useRef<HTMLInputElement | null>(null);
@@ -88,7 +89,7 @@ export default function ProductAdsForm(props: any) {
   };
 
   const handleAddNew = () => {
-    if (!name || !description || !price) return;
+    if (!name || !description || !price || startTime > endTime) return;
 
     const newProduct = {
       startTime,
@@ -245,12 +246,8 @@ export default function ProductAdsForm(props: any) {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button disabled={!isSubmitted} onClick={handleAddNew}>
-            Add new product
-          </Button>
-          <Button disabled={!isSubmitted} onClick={handleSubmit}>
-            Submit VTT File
-          </Button>
+          <Button onClick={handleAddNew}>Add new product</Button>
+          <Button onClick={handleSubmit}>Submit VTT File</Button>
         </DialogActions>
       </BootstrapDialog>
     </div>

@@ -8,7 +8,7 @@ function Player({ url, playerRef, ...props }: any) {
       {...props}
       playing
       controls
-      width={"50%"}
+      width={"70%"}
       height={"100%"}
     />
   );

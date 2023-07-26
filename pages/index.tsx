@@ -18,9 +18,7 @@ export default function Home() {
       try {
         const { pageSize, pageNumber } = videoParams;
         const data = await getVideo(pageSize, pageNumber);
-        // console.log(data);
-        setVideos(data.records);
-        setTotalPage(data.totalPages);
+        data && (setVideos(data.records), setTotalPage(data.totalPages));
       } catch (error) {
         console.error(error);
       }
@@ -28,7 +26,7 @@ export default function Home() {
 
     loadVideoByPagination();
   }, [videoParams]);
-  // console.log(videos);
+  console.log(videos);
 
   const handlePageChange = async (
     event: ChangeEvent<unknown>,

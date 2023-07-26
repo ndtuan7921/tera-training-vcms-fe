@@ -41,6 +41,7 @@ function VideoUploader(props: any) {
     setIsSubmitted,
     setIsVideoUploaded,
   } = props;
+
   useEffect(() => {
     if (isSubmitted) {
       uppy.cancelAll();

@@ -28,6 +28,7 @@ import dynamic from "next/dynamic";
 import ProductCard from "../../../src/components/ProductCard";
 import Link from "next/link";
 import { ConfirmDelete, ProductAdsForm } from "../../../src/components/Dialog";
+import UpdateVideo from "../../../src/components/Dialog/UpdateVideo";
 
 function VideoPage() {
   const router = useRouter();
@@ -40,6 +41,7 @@ function VideoPage() {
   const [productAds, setProductAds] = useState<any>([]);
   const [currentTime, setCurrentTime] = useState(0);
   const [isVTTSubmited, setIsVTTSubmited] = useState(false);
+  const [isUpdated, setIsUpdated] = useState(false);
   const [duration, setDuration] = useState(0);
 
   //    fetch video data
@@ -55,7 +57,7 @@ function VideoPage() {
       );
     };
     router.isReady && router.query.id && fetchVideoData();
-  }, [router.isReady, router.query.id]);
+  }, [router.isReady, router.query.id, isUpdated]);
 
   //    fetch video resolutions
   useEffect(() => {
@@ -116,6 +118,8 @@ function VideoPage() {
       setCurrentTime(playerRef.current.getCurrentTime());
   };
 
+  console.log(isUpdated);
+
   return (
     <>
       <Link href="/" style={{ textDecoration: "none", color: "inherit" }}>
@@ -126,7 +130,7 @@ function VideoPage() {
       </Link>
       {video && (
         <>
-          <Stack spacing={4} my={4} direction={"row"} height={500}>
+          <Stack spacing={4} my={4} direction={"row"} height={900}>
             <Player
               key={vttFile}
               playing
@@ -156,7 +160,7 @@ function VideoPage() {
               <Stack
                 spacing={2}
                 my={4}
-                overflow={"scroll"}
+                overflow={`${productAds.length > 0 && scroll}`}
                 sx={{ overflowX: "hidden" }}
               >
                 {productAds.length > 0 ? (
@@ -208,6 +212,13 @@ function VideoPage() {
             )}
 
             <ConfirmDelete videoId={video && video.id} />
+            <UpdateVideo
+              videoId={video.id}
+              title={video.title}
+              description={video.description}
+              thumbnailUrl={video.thumbnailUrl}
+              handleUpdate={setIsUpdated}
+            />
           </Stack>
 
           <Stack spacing={2} my={2}>

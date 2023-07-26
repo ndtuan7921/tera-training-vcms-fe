@@ -45,10 +45,13 @@ function ImageUploader(props: any) {
 
   uppy.on("file-added", (file) => {
     uppy.setMeta({ uploadType: "thumbnail" });
+    uppy.setFileMeta(file.id, {
+      name: file.name,
+    });
   });
 
   uppy.on("upload-success", function (file, upload) {
-    handleThumbnail(file!.data.name);
+    handleThumbnail(file!.name);
   });
 
   return (

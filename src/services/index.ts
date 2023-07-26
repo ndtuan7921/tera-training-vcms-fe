@@ -127,3 +127,24 @@ export const deleteVideo = async (id: string) => {
     console.error("Error deleting video:", error);
   }
 };
+
+/* PUT */
+export const updateVideo = async (id: string, videoUpdate: any) => {
+  try {
+    const URL = `${CONTENT_SERVICE_URL}/api/videos/${id}`;
+    const res = await fetch(URL, {
+      method: "PUT",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({ ...videoUpdate }),
+    });
+    // handle response
+    if (!res.ok) {
+      throw new Error("Failed to update video");
+    }
+    return res;
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
