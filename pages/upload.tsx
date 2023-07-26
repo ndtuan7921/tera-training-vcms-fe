@@ -24,6 +24,7 @@ export default function Upload() {
   const [isVideoUploaded, setIsVideoUploaded] = useState(false);
   const [videoData, setVideoData] = useState<any>({});
   const [thumbnail, setThumbnail] = useState<string>();
+  const [active, setActive] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -101,8 +102,8 @@ export default function Upload() {
 
             {/* Thumbnail upload */}
             <ImageUploader
-              handleThumbnail={setThumbnail}
-              {...{ isSubmitted, setIsSubmitted }}
+              isFormUploaded={isSubmitted}
+              handleImage={setThumbnail}
             />
           </Box>
 
@@ -110,13 +111,14 @@ export default function Upload() {
           <FormfieldWrapper>
             <Typography variant="h6">Video Upload</Typography>
             <VideoUploader
-              handleVideoData={setVideoData}
-              {...{ isSubmitted, setIsSubmitted, setIsVideoUploaded }}
+              handleVideo={setVideoData}
+              activeForm={active}
+              setActiveForm={setActive}
             />
           </FormfieldWrapper>
         </Stack>
         <FormfieldWrapper>
-          <Button type="submit" variant="contained" disabled={!isVideoUploaded}>
+          <Button type="submit" variant="contained" disabled={!active}>
             Upload
           </Button>
         </FormfieldWrapper>

@@ -2,7 +2,7 @@ import Uppy from "@uppy/core";
 import Tus from "@uppy/tus";
 import "@uppy/core/dist/style.min.css";
 import "@uppy/dashboard/dist/style.min.css";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { UPLOAD_SERVICE_URL } from "../../../env.config";
 import { Stack, Typography } from "@mui/material";
 import { Dashboard } from "@uppy/react";
@@ -21,22 +21,24 @@ const uppy = new Uppy({
   endpoint: TUS_ENDPOINT,
 });
 
-function ImageUploader(props: any) {
-  const { handleThumbnail, isSubmitted, setIsSubmitted } = props;
+interface ImageUploaderProps {
+  handleImage: any;
+  isFormUploaded: boolean;
+}
+
+function ImageUploader(props: ImageUploaderProps) {
+  const { handleImage, isFormUploaded } = props;
 
   useEffect(() => {
-    if (isSubmitted) {
-      uppy.cancelAll();
-      setIsSubmitted(false);
-    }
-  }, [isSubmitted]);
+    isFormUploaded && uppy.cancelAll();
+  }, [isFormUploaded]);
 
   uppy.on("file-added", (file) => {
     uppy.setMeta({ uploadType: "thumbnail" });
   });
 
   uppy.on("upload-success", function (file, upload) {
-    handleThumbnail(file!.data.name);
+    handleImage(file!.name);
   });
 
   return (
