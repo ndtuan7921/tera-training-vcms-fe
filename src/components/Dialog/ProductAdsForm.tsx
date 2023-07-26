@@ -20,6 +20,7 @@ import { useEffect, useRef, useState } from "react";
 import { ProductImageUploader } from "../Uploader";
 import { uploadVTTFile } from "../../services";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
+import { formatTime } from "../../utils/formatTime";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -184,7 +185,7 @@ export default function ProductAdsForm(props: any) {
                       onChange={handleStartTimeChange}
                       max={duration}
                     />
-                    <Input value={startTime} size="small" />
+                    <Input value={formatTime(startTime)} size="small" />
                   </Stack>
                 </Grid>
                 <Grid item xs={12}>
@@ -195,7 +196,7 @@ export default function ProductAdsForm(props: any) {
                       onChange={handleEndTimeChange}
                       max={duration}
                     />
-                    <Input value={endTime} size="small" />
+                    <Input value={formatTime(endTime)} size="small" />
                   </Stack>
                 </Grid>
               </Stack>

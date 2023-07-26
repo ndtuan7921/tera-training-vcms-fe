@@ -6,38 +6,15 @@ import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import SendIcon from "@mui/icons-material/Send";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { Product } from "../interfaces";
 import { Box, CardActionArea, Stack } from "@mui/material";
+import { formatTime } from "../utils/formatTime";
 
 interface ProductCardProps extends Product {}
 
 export default function ProductCard(props: ProductCardProps) {
   return (
-    // <Card sx={{ maxWidth: 300 }}>
-    //   <CardActionArea>
-    //     <CardMedia
-    //       sx={{ height: 200, width: 220 }}
-    //       component="img"
-    //       image={props.imgURL}
-    //     />
-    //     <CardContent>
-    //       <Typography gutterBottom variant="h6" component="div">
-    //         {props.name}
-    //       </Typography>
-    //       <Typography gutterBottom variant="subtitle2" component="div">
-    //         {props.price}
-    //       </Typography>
-    //       <Typography
-    //         gutterBottom
-    //         variant="body1"
-    //         component="div"
-    //         color={"error"}
-    //       >
-    //         Play to {props.startTime}
-    //       </Typography>
-    //     </CardContent>
-    //   </CardActionArea>
-    // </Card>
     <CardActionArea>
       <Card
         sx={{
@@ -66,14 +43,17 @@ export default function ProductCard(props: ProductCardProps) {
               >
                 {props.price}
               </Typography>
-              <Typography
-                variant="subtitle2"
-                color="text.secondary"
-                component="div"
-                sx={{ float: "left" }}
-              >
-                Play to seconds {props.startTime}
-              </Typography>
+              <Stack spacing={1} direction={"row"} alignItems={"center"}>
+                <AccessTimeIcon sx={{ fontSize: "1rem" }} />
+                <Typography
+                  variant="subtitle2"
+                  color="text.secondary"
+                  component="div"
+                  sx={{ float: "left" }}
+                >
+                  {formatTime(props.startTime)}
+                </Typography>
+              </Stack>
             </Stack>
           </CardContent>
         </Box>
