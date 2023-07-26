@@ -139,17 +139,19 @@ export default function ProductAdsForm(props: any) {
 
     try {
       const res = await uploadVTTFile(formData);
+      console.log(res);
       if (res!.ok) {
         alert("Submit File sucessfully");
         setIsOpen(false);
+        setIsVTTSubmited(true);
+        // reset form
+        setIsSubmitted((state) => !state);
+        nameRef.current!.value = "";
+        desRef.current!.value = "";
+        priceRef.current!.value = "";
+        setStartTime(0);
+        setEndTime(0);
       }
-      // reset form
-      setIsSubmitted((state) => !state);
-      nameRef.current!.value = "";
-      desRef.current!.value = "";
-      priceRef.current!.value = "";
-      setStartTime(0);
-      setEndTime(0);
     } catch (error) {
       console.error(error);
     }
