@@ -73,7 +73,7 @@ export default function UpdateVideo(props: any) {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [newThumbnail, setNewThumbnail] = useState<string>();
-
+  console.log(newThumbnail);
   const handleOpen = () => {
     setIsOpen((state) => !state);
   };
