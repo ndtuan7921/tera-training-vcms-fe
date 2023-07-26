@@ -142,9 +142,10 @@ export default function ProductAdsForm(props: any) {
       console.log(res);
       if (res!.ok) {
         alert("Submit File sucessfully");
-        setIsOpen(false);
-        setIsVTTSubmited(true);
+
         // reset form
+        setIsOpen((state) => !state);
+        setIsVTTSubmited(true);
         setIsSubmitted((state) => !state);
         nameRef.current!.value = "";
         desRef.current!.value = "";

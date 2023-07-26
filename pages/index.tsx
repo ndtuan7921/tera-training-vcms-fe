@@ -26,7 +26,7 @@ export default function Home() {
 
     loadVideoByPagination();
   }, [videoParams]);
-  console.log(videos);
+  // console.log(videos);
 
   const handlePageChange = async (
     event: ChangeEvent<unknown>,

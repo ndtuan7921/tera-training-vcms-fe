@@ -38,7 +38,7 @@ function VideoPage() {
   const [masterPlaylist, setMasterPlaylist] = useState<any>(null);
   const [selectedResolution, setSelectedResolution] = useState<any>(null);
   const [vttFile, setVttFile] = useState<any>(null);
-  const [productAds, setProductAds] = useState<any>([]);
+  const [productAds, setProductAds] = useState<[]>([]);
   const [currentTime, setCurrentTime] = useState(0);
   const [isVTTSubmited, setIsVTTSubmited] = useState(false);
   const [isUpdated, setIsUpdated] = useState(false);
@@ -75,16 +75,18 @@ function VideoPage() {
     const loadVTTFile = async () => {
       const videoId = router.query.id as string;
       const data = await getVTTFileByVideoId(videoId);
-      setVttFile(VTT_SERVICE_URL + data.vttUrl);
+      data
+        ? setVttFile(VTT_SERVICE_URL + data.vttUrl)
+        : (setVttFile(""), setProductAds([]));
     };
     router.query.id && loadVTTFile();
-  }, [router.isReady, router.query.id, isVTTSubmited]);
+  }, [router.isReady, router.query.id, vttFile, isVTTSubmited]);
 
   //    fetch VTT data
   useEffect(() => {
     const loadVTTData = async () => {
       const data = await getProductListByVTTFile(vttFile);
-      setProductAds(data);
+      data && setProductAds(data);
     };
     vttFile && loadVTTData();
   }, [vttFile, isVTTSubmited]);
@@ -105,7 +107,7 @@ function VideoPage() {
         ],
       },
     };
-  }, [vttFile, isVTTSubmited]);
+  }, [router.isReady, router.query.id, vttFile, isVTTSubmited]);
 
   const baseURL = `${CONTENT_SERVICE_URL}/manifest/${video?.fileName.replace(
     ".mp4",
@@ -117,8 +119,6 @@ function VideoPage() {
     playerRef.current.getCurrentTime() &&
       setCurrentTime(playerRef.current.getCurrentTime());
   };
-
-  console.log(isUpdated);
 
   return (
     <>
@@ -166,10 +166,10 @@ function VideoPage() {
               <Stack
                 spacing={2}
                 my={4}
-                overflow={`${productAds.length > 0 && scroll}`}
+                overflow={`${productAds && productAds.length > 0 && scroll}`}
                 sx={{ overflowX: "hidden" }}
               >
-                {productAds.length > 0 ? (
+                {productAds && productAds.length > 0 ? (
                   productAds.map((product: Product) => (
                     <div
                       key={product.imgURL}
@@ -218,7 +218,8 @@ function VideoPage() {
               <Typography variant="h6">Wait for transcoding</Typography>
             )}
 
-            <ConfirmDelete videoId={video && video.id} />
+            <ConfirmDelete videoId={video && video.id} type={"video"} />
+            <ConfirmDelete videoId={video && video.id} type={"vtt"} />
             <UpdateVideo
               videoId={video.id}
               title={video.title}

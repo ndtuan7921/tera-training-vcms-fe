@@ -6,14 +6,31 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { deleteVideo } from "../../services";
+import { deleteVTTFile, deleteVideo } from "../../services";
 import { useRouter } from "next/router";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import LayersClearIcon from "@mui/icons-material/LayersClear";
+
+const DELETE_OBJECT = [
+  {
+    type: "video",
+    title: "Delete video",
+    text: "Are you sure you want to delete this video?",
+  },
+  {
+    type: "vtt",
+    title: "Delete VTT File",
+    text: "Are you sure you want to delete the video's vtt file?",
+  },
+];
 
 export default function ConfirmDelete(props: any) {
-  const { videoId } = props;
+  const { videoId, type } = props;
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
+
+  const objDelete = DELETE_OBJECT.find((obj) => obj.type === type);
+  // console.log(objDelete);
 
   const handleClickOpen = () => {
     setOpen((state) => !state);
@@ -21,12 +38,15 @@ export default function ConfirmDelete(props: any) {
 
   const handleDelete = async () => {
     try {
-      const res = await deleteVideo(videoId);
+      const res =
+        objDelete?.type == "video"
+          ? await deleteVideo(videoId)
+          : await deleteVTTFile(videoId);
       console.log(res);
-      alert("Deleted video");
-      router.push("/");
+      alert(`Deleted ${objDelete?.type}`);
+      // router.push("/");
     } catch (error) {
-      console.error("Error deleting video:", error);
+      console.error(`Error deleting ${objDelete?.type}`, error);
     }
   };
 
@@ -36,16 +56,20 @@ export default function ConfirmDelete(props: any) {
         variant="outlined"
         color="error"
         onClick={handleClickOpen}
-        startIcon={<DeleteOutlineIcon />}
+        startIcon={
+          objDelete?.type == "video" ? (
+            <DeleteOutlineIcon />
+          ) : (
+            <LayersClearIcon />
+          )
+        }
       >
-        Delete video
+        {objDelete?.title}
       </Button>
       <Dialog open={open} onClose={handleClickOpen}>
-        <DialogTitle>Delete Video</DialogTitle>
+        <DialogTitle>{objDelete?.title}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete this video?
-          </DialogContentText>
+          <DialogContentText>{objDelete?.text}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClickOpen}>Cancel</Button>

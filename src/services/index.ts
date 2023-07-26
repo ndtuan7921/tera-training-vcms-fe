@@ -44,6 +44,10 @@ export const getVTTFileByVideoId = async (id: string) => {
     const URL = `${VTT_SERVICE_URL}/api/vtts/${id}`;
     const res = await fetch(URL);
     let data = await res.json();
+    // console.log(data);
+    if (data.statusCode == 404) {
+      throw new Error(data.message);
+    }
     return data;
   } catch (error) {
     console.log("Error:", error);
@@ -55,8 +59,8 @@ export const getProductListByVTTFile = async (vttURL: string) => {
     const URL = vttURL;
     const res = await fetch(URL);
     if (res.status == 404) return [];
-    const webvttContent = await res.text();
-    const result = parseWebVtt(webvttContent);
+    const data = await res.text();
+    const result = parseWebVtt(data);
     return result;
   } catch (error) {
     console.log("Error:", error);
@@ -123,6 +127,23 @@ export const deleteVideo = async (id: string) => {
     if (!res.ok) {
       throw new Error("Failed to delete video");
     }
+    return res;
+  } catch (error) {
+    console.error("Error deleting video:", error);
+  }
+};
+
+export const deleteVTTFile = async (videoId: string) => {
+  try {
+    const URL = `${VTT_SERVICE_URL}/api/vtts/${videoId}`;
+    const res = await fetch(URL, {
+      method: "DELETE",
+    });
+    // handle response
+    if (!res.ok) {
+      throw new Error("Failed to delete vtt file");
+    }
+    return res;
   } catch (error) {
     console.error("Error deleting video:", error);
   }
