@@ -119,7 +119,7 @@ function VideoPage() {
     playerRef.current.getCurrentTime() &&
       setCurrentTime(playerRef.current.getCurrentTime());
   };
-
+  console.log(video?.thumbnailUrl);
   return (
     <>
       <Link href="/" style={{ textDecoration: "none", color: "inherit" }}>
@@ -224,7 +224,7 @@ function VideoPage() {
               videoId={video.id}
               title={video.title}
               description={video.description}
-              thumbnailUrl={video.thumbnailUrl}
+              thumbnail={video?.thumbnailUrl}
               handleUpdate={setIsUpdated}
             />
           </Stack>
