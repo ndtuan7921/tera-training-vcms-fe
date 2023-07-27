@@ -1,19 +1,21 @@
-import * as React from "react";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import SendIcon from "@mui/icons-material/Send";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { Product } from "../interfaces";
-import { Box, CardActionArea, Stack } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardActionArea,
+  CardContent,
+  CardMedia,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { formatTime } from "../utils/formatTime";
+import { VTT_SERVICE_URL } from "../../env.config";
 
 interface ProductCardProps extends Product {}
 
 export default function ProductCard(props: ProductCardProps) {
+  console.log(props);
   return (
     <CardActionArea>
       <Card
@@ -27,7 +29,7 @@ export default function ProductCard(props: ProductCardProps) {
         <CardMedia
           component="img"
           sx={{ width: 151, height: 135 }}
-          image={props.imgURL}
+          image={VTT_SERVICE_URL + "/vtt-image/" + props.image}
           alt="Live from space album cover"
         />
         <Box sx={{ display: "flex", flexDirection: "column" }}>

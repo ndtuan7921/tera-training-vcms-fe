@@ -18,12 +18,14 @@ const FormfieldWrapper = styled(Box)(({ theme }) => ({
 
 export default function Upload() {
   const router = useRouter();
+
   const titleRef = useRef<HTMLInputElement | null>(null);
   const descriptionRef = useRef<HTMLInputElement | null>(null);
+
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isVideoUploaded, setIsVideoUploaded] = useState(false);
   const [videoData, setVideoData] = useState<any>({});
   const [thumbnail, setThumbnail] = useState<string>();
+  const [active, setActive] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -31,10 +33,10 @@ export default function Upload() {
     const title = titleRef.current?.value;
     const description = descriptionRef.current?.value;
 
-    if (!title || !description) {
-      console.error("Title and description are required");
-      return;
-    }
+    // if (!title || !description) {
+    //   console.error("Title and description are required");
+    //   return;
+    // }
 
     const videoUploadData = {
       title,
@@ -45,20 +47,15 @@ export default function Upload() {
 
     try {
       const response = await uploadVideo(videoUploadData);
-      // handle response
-      // ...
-      console.log(response);
+      response!.status == 200 &&
+        (alert("Upload video successfully"), router.replace("/"));
 
       // Reset form values
       titleRef.current!.value = "";
       descriptionRef.current!.value = "";
-      setIsSubmitted((state) => !state);
-      setIsVideoUploaded(false);
+      setIsSubmitted(false);
+      setThumbnail(undefined);
       setVideoData({});
-
-      alert("Video uploaded successfully!");
-
-      router.replace("/");
     } catch (error) {
       console.error("Error uploading video:", error);
     }
@@ -101,8 +98,11 @@ export default function Upload() {
 
             {/* Thumbnail upload */}
             <ImageUploader
-              handleThumbnail={setThumbnail}
-              {...{ isSubmitted, setIsSubmitted }}
+              type="thumbnail"
+              // setActiveForm={setActive}
+              activeForm={active}
+              handleImage={setThumbnail}
+              isFormSubmited={isSubmitted}
             />
           </Box>
 
@@ -110,13 +110,15 @@ export default function Upload() {
           <FormfieldWrapper>
             <Typography variant="h6">Video Upload</Typography>
             <VideoUploader
-              handleVideoData={setVideoData}
-              {...{ isSubmitted, setIsSubmitted, setIsVideoUploaded }}
+              handleVideo={setVideoData}
+              isFormSubmited={isSubmitted}
+              setActiveForm={setActive}
+              activeForm={active}
             />
           </FormfieldWrapper>
         </Stack>
         <FormfieldWrapper>
-          <Button type="submit" variant="contained" disabled={!isVideoUploaded}>
+          <Button type="submit" variant="contained" disabled={!active}>
             Upload
           </Button>
         </FormfieldWrapper>

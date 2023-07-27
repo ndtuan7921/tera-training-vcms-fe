@@ -1,15 +1,17 @@
-import * as React from "react";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import { deleteVTTFile, deleteVideo } from "../../services";
-import { useRouter } from "next/router";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import LayersClearIcon from "@mui/icons-material/LayersClear";
+import { useState } from "react";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
+import { useRouter } from "next/router";
 
 const DELETE_OBJECT = [
   {
@@ -27,7 +29,7 @@ const DELETE_OBJECT = [
 export default function ConfirmDelete(props: any) {
   const { videoId, type } = props;
   const router = useRouter();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const objDelete = DELETE_OBJECT.find((obj) => obj.type === type);
   // console.log(objDelete);
@@ -42,17 +44,15 @@ export default function ConfirmDelete(props: any) {
         objDelete?.type == "video"
           ? await deleteVideo(videoId)
           : await deleteVTTFile(videoId);
-      console.log(res);
-      alert(`Deleted ${objDelete?.type}`);
+      res!.ok && (alert(`Deleted ${objDelete?.type}`), router.push("/"));
       setOpen(false);
-      // router.push("/");
     } catch (error) {
       console.error(`Error deleting ${objDelete?.type}`, error);
     }
   };
 
   return (
-    <div>
+    <Box>
       <Button
         variant="outlined"
         color="error"
@@ -79,6 +79,6 @@ export default function ConfirmDelete(props: any) {
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </Box>
   );
 }

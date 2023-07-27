@@ -17,7 +17,7 @@ import {
   Input,
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { ProductImageUploader } from "../Uploader";
+import { ImageUploader, ProductImageUploader } from "../Uploader";
 import { uploadVTTFile } from "../../services";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { formatTime } from "../../utils/formatTime";
@@ -69,43 +69,69 @@ export default function ProductAdsForm(props: any) {
   const [imgURL, setImgURL] = useState("");
   const [startTime, setStartTime] = useState<any>(0);
   const [endTime, setEndTime] = useState<any>(0);
+  const [productList, setProductList] = useState<any>([]);
+  const [product, setProduct] = useState<any>({
+    startTime: 0,
+    endTime: 0,
+    name: "",
+    description: "",
+    price: "",
+    image: "",
+  });
 
-  const nameRef = useRef<HTMLInputElement | null>(null);
-  const desRef = useRef<HTMLInputElement | null>(null);
-  const priceRef = useRef<HTMLInputElement | null>(null);
+  useEffect(() => {
+    imgURL != "" && setProduct({ ...product, image: imgURL });
+  }, [imgURL]);
 
-  const name = nameRef.current?.value;
-  const description = desRef.current?.value;
-  const price = priceRef.current?.value;
+  // const nameRef = useRef<HTMLInputElement | null>(null);
+  // const desRef = useRef<HTMLInputElement | null>(null);
+  // const priceRef = useRef<HTMLInputElement | null>(null);
 
   const handleOpen = () => {
     setIsOpen((state) => !state);
   };
 
-  const handleStartTimeChange = (event: Event, newValue: number | number[]) => {
-    setStartTime(newValue);
-  };
-  const handleEndTimeChange = (event: Event, newValue: number | number[]) => {
-    setEndTime(newValue);
-  };
+  // const handleStartTimeChange = (event: Event, newValue: number | number[]) => {
+  //   setStartTime(newValue);
+  // };
+  // const handleEndTimeChange = (event: Event, newValue: number | number[]) => {
+  //   setEndTime(newValue);
+  // };
 
-  const handleAddNew = () => {
-    if (!name || !description || !price || startTime > endTime) return;
+  // const handleAddNew = () => {
+  //   const name = nameRef.current?.value;
+  //   const description = desRef.current?.value;
+  //   const price = priceRef.current?.value;
 
-    const newProduct = {
-      startTime,
-      endTime,
-      name,
-      description,
-      price,
-      imgURL,
-    };
-    setProductAds([...productAds, newProduct]);
-    alert("Product added!");
-  };
+  //   if (!name || !description || !price || startTime > endTime) return;
+
+  //   const newProduct = {
+  //     startTime,
+  //     endTime,
+  //     name,
+  //     description,
+  //     price,
+  //     imgURL,
+  //   };
+  //   setProductList([...productList, newProduct]);
+  //   alert("Product added!");
+  // };
 
   const handleSubmit = async () => {
-    if (!name || !description || !price || startTime > endTime) return;
+    // console.log(productList);
+    productAds.push(product);
+    // if (!name || !description || !price || startTime > endTime) return;
+
+    // const newProduct = {
+    //   startTime,
+    //   endTime,
+    //   name,
+    //   description,
+    //   price,
+    //   imgURL,
+    // };
+
+    // setProductList([...productList, newProduct]);
 
     const parsedSubtitle = {
       cues: [],
@@ -117,7 +143,7 @@ export default function ProductAdsForm(props: any) {
         identifier: (index + 1).toString(),
         start: subtitle.startTime,
         end: subtitle.endTime,
-        text: `${subtitle.name}\n${subtitle.description}\n${subtitle.price}\n${subtitle.imgURL}`,
+        text: `${subtitle.name}\n${subtitle.description}\n${subtitle.price}\n${subtitle.image}`,
         styles: "",
       };
       parsedSubtitle.cues.push(cue as never);
@@ -125,7 +151,7 @@ export default function ProductAdsForm(props: any) {
 
     const modifiedSubtitleContent = (webvtt as any).compile(parsedSubtitle);
 
-    // console.log(modifiedSubtitleContent);
+    console.log(modifiedSubtitleContent);
 
     const modifiedSubtitleFile = new File(
       [modifiedSubtitleContent],
@@ -142,16 +168,18 @@ export default function ProductAdsForm(props: any) {
       console.log(res);
       if (res!.ok) {
         alert("Submit File sucessfully");
+        setIsVTTSubmited(true);
 
         // reset form
-        setIsOpen((state) => !state);
-        setIsVTTSubmited(true);
-        setIsSubmitted((state) => !state);
-        nameRef.current!.value = "";
-        desRef.current!.value = "";
-        priceRef.current!.value = "";
-        setStartTime(0);
-        setEndTime(0);
+        setProduct({
+          startTime: 0,
+          endTime: 0,
+          name: "",
+          description: "",
+          price: "",
+          image: "",
+        });
+        setIsOpen(false);
       }
     } catch (error) {
       console.error(error);
@@ -168,6 +196,7 @@ export default function ProductAdsForm(props: any) {
       >
         Add Product
       </Button>
+
       <BootstrapDialog
         onClose={handleOpen}
         aria-labelledby="customized-dialog-title"
@@ -184,22 +213,28 @@ export default function ProductAdsForm(props: any) {
                   <InputLabel>Start Time</InputLabel>
                   <Stack direction={"row"} spacing={3}>
                     <Slider
-                      value={startTime}
-                      onChange={handleStartTimeChange}
+                      value={product.startTime}
+                      // onChange={handleStartTimeChange}
+                      onChange={(e, value) =>
+                        setProduct({ ...product, startTime: value })
+                      }
                       max={duration}
                     />
-                    <Input value={formatTime(startTime)} size="small" />
+                    <Input value={formatTime(product.startTime)} size="small" />
                   </Stack>
                 </Grid>
                 <Grid item xs={12}>
                   <InputLabel>End Time</InputLabel>
                   <Stack direction={"row"} spacing={3}>
                     <Slider
-                      value={endTime}
-                      onChange={handleEndTimeChange}
+                      value={product.endTime}
+                      // onChange={handleEndTimeChange}
+                      onChange={(e, value) =>
+                        setProduct({ ...product, endTime: value })
+                      }
                       max={duration}
                     />
-                    <Input value={formatTime(endTime)} size="small" />
+                    <Input value={formatTime(product.endTime)} size="small" />
                   </Stack>
                 </Grid>
               </Stack>
@@ -210,7 +245,11 @@ export default function ProductAdsForm(props: any) {
                 <TextField
                   required
                   fullWidth
-                  inputRef={nameRef}
+                  // inputRef={nameRef}
+                  value={product.name}
+                  onChange={(e) =>
+                    setProduct({ ...product, name: e.target.value })
+                  }
                   id="product-name"
                   placeholder="Enter Product Name"
                 />
@@ -223,7 +262,11 @@ export default function ProductAdsForm(props: any) {
                 </InputLabel>
                 <TextField
                   fullWidth
-                  inputRef={desRef}
+                  // inputRef={desRef}
+                  value={product.description}
+                  onChange={(e) =>
+                    setProduct({ ...product, description: e.target.value })
+                  }
                   id="product-description"
                   placeholder="Description"
                 />
@@ -235,7 +278,11 @@ export default function ProductAdsForm(props: any) {
                 <TextField
                   required
                   fullWidth
-                  inputRef={priceRef}
+                  // inputRef={priceRef}
+                  value={product.price}
+                  onChange={(e) =>
+                    setProduct({ ...product, price: e.target.value })
+                  }
                   id="product-price"
                   placeholder="Price"
                 />
@@ -244,17 +291,18 @@ export default function ProductAdsForm(props: any) {
             <Grid item xs={12}>
               <Stack spacing={1.25}>
                 <InputLabel htmlFor="product-img">Product image</InputLabel>
-                <ProductImageUploader
-                  {...{ isSubmitted, setIsSubmitted }}
-                  handleProductImage={setImgURL}
+                <ImageUploader
+                  type="vtt_image"
+                  handleImage={setImgURL}
+                  isFormSubmited={isSubmitted}
                 />
               </Stack>
             </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleAddNew}>Add new product</Button>
-          <Button onClick={handleSubmit}>Submit VTT File</Button>
+          {/* <Button onClick={handleAddNew}>Add new product</Button> */}
+          <Button onClick={handleSubmit}>Add to VTT File</Button>
         </DialogActions>
       </BootstrapDialog>
     </div>

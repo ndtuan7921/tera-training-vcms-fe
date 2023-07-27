@@ -1,5 +1,5 @@
 import { CONTENT_SERVICE_URL, VTT_SERVICE_URL } from "../../env.config";
-import { VideoUpload } from "../interfaces";
+import { VideoUpdate, VideoUpload } from "../interfaces";
 import { parseWebVtt } from "../utils/parseVTTFile";
 
 /* GET */
@@ -88,11 +88,6 @@ export const uploadVideo = async (video: VideoUpload) => {
       },
       body: JSON.stringify({ ...video }),
     });
-    // handle response
-    if (!response.ok) {
-      throw new Error("Failed to upload video");
-    }
-
     return response;
   } catch (error) {
     console.error("Error uploading video:", error);
@@ -105,11 +100,6 @@ export const uploadVTTFile = async (vttFile: any) => {
       method: "POST",
       body: vttFile,
     });
-
-    // handle response
-    if (!response.ok) {
-      throw new Error("Failed to upload vtt file");
-    }
     return response;
   } catch (error) {
     console.error("Error uploading vtt file:", error);
@@ -123,10 +113,6 @@ export const deleteVideo = async (id: string) => {
     const res = await fetch(URL, {
       method: "DELETE",
     });
-    // handle response
-    if (!res.ok) {
-      throw new Error("Failed to delete video");
-    }
     return res;
   } catch (error) {
     console.error("Error deleting video:", error);
@@ -150,7 +136,7 @@ export const deleteVTTFile = async (videoId: string) => {
 };
 
 /* PUT */
-export const updateVideo = async (id: string, videoUpdate: any) => {
+export const updateVideo = async (id: string, videoUpdate: VideoUpdate) => {
   try {
     const URL = `${CONTENT_SERVICE_URL}/api/videos/${id}`;
     const res = await fetch(URL, {
@@ -160,10 +146,6 @@ export const updateVideo = async (id: string, videoUpdate: any) => {
       },
       body: JSON.stringify({ ...videoUpdate }),
     });
-    // handle response
-    if (!res.ok) {
-      throw new Error("Failed to update video");
-    }
     return res;
   } catch (error) {
     console.error("Error:", error);

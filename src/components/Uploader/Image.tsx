@@ -2,7 +2,7 @@ import Uppy from "@uppy/core";
 import Tus from "@uppy/tus";
 import "@uppy/core/dist/style.min.css";
 import "@uppy/dashboard/dist/style.min.css";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { UPLOAD_SERVICE_URL } from "../../../env.config";
 import { Dashboard } from "@uppy/react";
 
@@ -33,26 +33,38 @@ const uppy = new Uppy({
   // endpoint: TUS_ENDPOINT,
 });
 
-function ImageUploader(props: any) {
-  const { handleThumbnail, isSubmitted, setIsSubmitted } = props;
+interface ImageUploaderProps {
+  handleImage: any;
+  activeForm?: boolean;
+  setActiveForm?: any;
+  isFormSubmited: boolean;
+  type: string;
+}
+
+function ImageUploader(props: ImageUploaderProps) {
+  const { handleImage, activeForm, setActiveForm, isFormSubmited, type } =
+    props;
 
   useEffect(() => {
-    if (isSubmitted) {
-      uppy.cancelAll();
-      setIsSubmitted(false);
-    }
-  }, [isSubmitted]);
+    !isFormSubmited && uppy.cancelAll();
+  }, [isFormSubmited]);
 
   uppy.on("file-added", (file) => {
-    uppy.setMeta({ uploadType: "thumbnail" });
+    uppy.setMeta({ uploadType: type });
     uppy.setFileMeta(file.id, {
       name: file.name,
     });
   });
 
+  uppy.on("complete", (results) => {
+    results.successful.length > 0 &&
+      console.log("upload image successful", results.successful);
+    results.failed.length > 0 &&
+      console.log("upload image failed", results.failed);
+  });
+
   uppy.on("upload-success", function (file, upload) {
-    handleThumbnail(file!.name);
-    setIsSubmitted(true);
+    handleImage(file!.name);
   });
 
   return (

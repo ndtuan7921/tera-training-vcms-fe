@@ -43,6 +43,7 @@ function VideoPage() {
   const [isVTTSubmited, setIsVTTSubmited] = useState(false);
   const [isUpdated, setIsUpdated] = useState(false);
   const [duration, setDuration] = useState(0);
+  console.log(productAds);
 
   //    fetch video data
   useEffect(() => {
@@ -79,8 +80,8 @@ function VideoPage() {
         ? setVttFile(VTT_SERVICE_URL + data.vttUrl)
         : (setVttFile(""), setProductAds([]));
     };
-    router.query.id && loadVTTFile();
-  }, [router.isReady, router.query.id, vttFile, isVTTSubmited]);
+    (router.query.id && loadVTTFile()) || (isVTTSubmited && loadVTTFile());
+  }, [router.isReady, router.query.id, isVTTSubmited]);
 
   //    fetch VTT data
   useEffect(() => {
@@ -88,7 +89,7 @@ function VideoPage() {
       const data = await getProductListByVTTFile(vttFile);
       data && setProductAds(data);
     };
-    vttFile && loadVTTData();
+    (vttFile && loadVTTData()) || (isVTTSubmited && loadVTTData());
   }, [vttFile, isVTTSubmited]);
 
   const config = useMemo(() => {
@@ -119,7 +120,7 @@ function VideoPage() {
     playerRef.current.getCurrentTime() &&
       setCurrentTime(playerRef.current.getCurrentTime());
   };
-  console.log(video?.thumbnailUrl);
+
   return (
     <>
       <Link href="/" style={{ textDecoration: "none", color: "inherit" }}>
@@ -172,7 +173,7 @@ function VideoPage() {
                 {productAds && productAds.length > 0 ? (
                   productAds.map((product: Product) => (
                     <div
-                      key={product.imgURL}
+                      key={product.image}
                       onClick={() =>
                         playerRef.current?.seekTo(product.startTime)
                       }
@@ -215,7 +216,9 @@ function VideoPage() {
                 </Select>
               </FormControl>
             ) : (
-              <Typography variant="h6">Wait for transcoding</Typography>
+              <Typography variant="h6">
+                {"["} Waiting for transcoding... {"]"}
+              </Typography>
             )}
 
             <ConfirmDelete videoId={video && video.id} type={"video"} />

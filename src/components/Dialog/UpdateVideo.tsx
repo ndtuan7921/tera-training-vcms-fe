@@ -1,6 +1,6 @@
-import * as React from "react";
-import * as webvtt from "node-webvtt";
 import CloseIcon from "@mui/icons-material/Close";
+import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
+
 import {
   Button,
   Dialog,
@@ -10,16 +10,13 @@ import {
   Grid,
   IconButton,
   InputLabel,
-  Stack,
   TextField,
   styled,
-  Slider,
-  Input,
 } from "@mui/material";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { ImageUploader, ProductImageUploader } from "../Uploader";
-import { updateVideo, uploadVTTFile } from "../../services";
-import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
+import { useEffect, useState } from "react";
+import { ImageUploader } from "../Uploader";
+import { updateVideo } from "../../services";
+import { VideoUpdate } from "../../interfaces";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -61,36 +58,34 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
 }
 
 export default function UpdateVideo(props: any) {
-  console.log("props: ", props);
   const { videoId, title, description, thumbnail, handleUpdate } = props;
 
-  const [formUpdate, setFormUpdate] = useState({
+  const [formUpdate, setFormUpdate] = useState<VideoUpdate>({
     title,
     description,
     thumbnail,
   });
-  console.log(formUpdate);
+
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [newThumbnail, setNewThumbnail] = useState<string>();
-  console.log(newThumbnail);
+  const [newThumbnail, setNewThumbnail] = useState<string>("");
+
   const handleOpen = () => {
     setIsOpen((state) => !state);
   };
 
   useEffect(() => {
-    isSubmitted && setFormUpdate({ ...formUpdate, thumbnail: newThumbnail });
+    newThumbnail != "" &&
+      setFormUpdate({ ...formUpdate, thumbnail: newThumbnail });
   }, [newThumbnail]);
 
   const handleSubmit = async () => {
-    // console.log(formUpdate);
     try {
       const res = await updateVideo(videoId, formUpdate);
-      console.log(res);
-      alert("Updated video");
+      res!.ok && (alert("Update video successfully"), handleUpdate(true));
+      // reset form
       setIsOpen(false);
-      handleUpdate(true);
-      setIsSubmitted((state) => !state);
+      setIsSubmitted(true);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -144,8 +139,9 @@ export default function UpdateVideo(props: any) {
             <Grid item xs={12}>
               <InputLabel>Thumbnail</InputLabel>
               <ImageUploader
-                handleThumbnail={setNewThumbnail}
-                {...{ isSubmitted, setIsSubmitted }}
+                type="thumbnail"
+                handleImage={setNewThumbnail}
+                isFormSubmited={isSubmitted}
               />
             </Grid>
           </Grid>

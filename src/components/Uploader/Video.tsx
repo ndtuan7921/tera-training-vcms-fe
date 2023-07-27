@@ -2,7 +2,7 @@ import Uppy from "@uppy/core";
 import Tus from "@uppy/tus";
 import "@uppy/core/dist/style.min.css";
 import "@uppy/dashboard/dist/style.min.css";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { UPLOAD_SERVICE_URL } from "../../../env.config";
 import { Dashboard } from "@uppy/react";
 
@@ -33,43 +33,41 @@ const uppy = new Uppy({
   //   endpoint: TUS_ENDPOINT,
 });
 
-function VideoUploader(props: any) {
-  const {
-    handleUpload,
-    handleVideoData,
-    isSubmitted,
-    setIsSubmitted,
-    setIsVideoUploaded,
-  } = props;
+interface VideoUploaderProps {
+  handleVideo: any;
+  activeForm: boolean;
+  setActiveForm: any;
+  isFormSubmited: boolean;
+}
+
+function VideoUploader(props: VideoUploaderProps) {
+  const { handleVideo, activeForm, setActiveForm, isFormSubmited } = props;
 
   useEffect(() => {
-    if (isSubmitted) {
-      uppy.cancelAll();
-      setIsSubmitted(false);
-    }
-  }, [isSubmitted, setIsSubmitted]);
+    !isFormSubmited && uppy.cancelAll();
+  }, [isFormSubmited]);
 
   uppy.on("file-added", (file) => {
     uppy.setMeta({ uploadType: "video" });
-
     uppy.setFileMeta(file.id, {
       name: file.name,
     });
   });
 
-  uppy.on("complete", ({ successful, failed }) => {
-    console.log("successful\t", successful);
-    console.log("failed\t", failed);
+  uppy.on("complete", (results) => {
+    results.successful.length > 0 &&
+      console.log("upload video successful", results.successful);
+    results.failed.length > 0 &&
+      console.log("upload video failed", results.failed);
   });
 
   uppy.on("upload-success", function (file, upload) {
-    setIsVideoUploaded(true);
-    console.log(file);
-    handleVideoData({ fileName: file!.name, fileId: file!.id });
+    setActiveForm(true);
+    handleVideo({ fileName: file!.name, fileId: file!.id });
   });
 
   uppy.on("file-removed", (file, reason) => {
-    setIsVideoUploaded(false);
+    setActiveForm(false);
   });
 
   return <Dashboard uppy={uppy} proudlyDisplayPoweredByUppy={false} />;

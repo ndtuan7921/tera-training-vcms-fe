@@ -22,6 +22,12 @@ export interface VideoUpload {
   thumbnailUrl: string;
 }
 
+export interface VideoUpdate {
+  title: string;
+  description: string;
+  thumbnail: string;
+}
+
 export interface VttFileUpload {
   vttFile: File;
   videoId: string;
@@ -33,5 +39,5 @@ export interface Product {
   name: string;
   description: string;
   price: string;
-  imgURL: string;
+  image: string;
 }
